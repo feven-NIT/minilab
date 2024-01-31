@@ -1,0 +1,998 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../03_install_wordpress/">
+      
+      
+        <link rel="next" href="../05_kubeburner/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
+    
+    
+      
+        <title>Installation de conjur cyberark sur openshift - My Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#installation-de-cyberark" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="My Docs" class="md-header__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Installation de conjur cyberark sur openshift
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/feven-redhat/minilab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    feven-redhat/minilab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openshift/" class="md-tabs__link">
+          
+  
+    
+  
+  Minilab guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Additional Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="My Docs" class="md-nav__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    My Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/feven-redhat/minilab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    feven-redhat/minilab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openshift/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Minilab guides
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Minilab guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/01_rhel-installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de Red Hat Enterprise Linux sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/02_microshift-installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de MicroShift (mode RPM)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/03_microshift-connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Connexion sur MicroShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/04_add-console/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Connexion a la console
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/05_configure-storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure dynamic storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Additional Setup
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Additional Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_openvpn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation et configuration d'un VPN sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de keycloack sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_install_wordpress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de wordpress sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Installation de conjur cyberark sur openshift
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Installation de conjur cyberark sur openshift
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation-de-cyberark" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation de cyberark
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gestion-des-token-pour-openshift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gestion des token pour Openshift
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05_kubeburner/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using kube-burner on OpenShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation-de-cyberark" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation de cyberark
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gestion-des-token-pour-openshift" class="md-nav__link">
+    <span class="md-ellipsis">
+      Gestion des token pour Openshift
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="installation-de-conjur-cyberark-sur-openshift">Installation de conjur cyberark sur openshift</h1>
+<h1 id="prerequisites">Prerequisites</h1>
+<p>Installez le conjur cli.
+Avoir metal Lb ou un autres service de loadbalancing disponible. 
+NOTE: Il est surement possible de la faire via une route ,mais cela n'est pas traité dans ce guide.</p>
+<h2 id="installation-de-cyberark">Installation de cyberark</h2>
+<p>Pour commencer nous allons installer conjur sur Openshift dans un namespace dédié.</p>
+<pre><code class="language-shell">oc new-project florian-ns
+</code></pre>
+<p>Pour cela un Helm chart est mis à disposition. Cloner le repo ci-dessous.</p>
+<pre><code class="language-shell">git clone TOCOMPLETE
+</code></pre>
+<p>Puis installez conjur </p>
+<pre><code class="language-shell">DATA_KEY=$(docker run --rm cyberark/conjur data-key generate)
+helm install conjur ./conjur-oss --set dataKey=&quot;${DATA_KEY}&quot; --set authenticators=&quot;authn\,authn-k8s/florian-ns&quot; --version 2.0.0 --set openshift.enabled=true --namespace florian-ns
+#Exemple 
+#helm install conjur ./conjur-oss --set dataKey=&quot;8QYoky5p9szd9iXxSRmoOqGClOebfBPNCEpBl3Bn7jo=&quot; --set authenticators=&quot;authn\,authn-k8s/conjur&quot; --version 2.0.0 --set openshift.enabled=true --namespace florian-ns
+</code></pre>
+<p>On configure ici 2 authenticators : <code>authn</code> pour une authentification en login/password standard et <code>authn-k8s</code> pour l'authentification des pods.</p>
+<p>On créer maintenant un compte par défaut :</p>
+<pre><code class="language-shell">oc get po # On récupere ici le nom du pods
+oc exec -it conjur-conjur-oss-6466669767-zbk6n -c conjur-oss -- conjurctl account create default
+</code></pre>
+<p><strong>NOTE: Conserver l'ouput de la commande précédente. Le mot de passe sera utilisé dans la suite de ce guide.</strong></p>
+<p>Dans notre helm chart le certificat est configuré pour le nom de domaine conjur.myorg.com. On va donc éditer le local base domain.</p>
+<pre><code class="language-shell">oc get svc conjur-conjur-oss-ingress -ojsonpath='{.status.loadBalancer.ingress[0].ip}'
+#10.253.234.69
+</code></pre>
+<pre><code class="language-shell">sudo vi /etc/hosts
+# add conjur.myorg.com 10.253.234.69
+</code></pre>
+<p>On va ensuite utiliser la commande <code>conjur init</code> pour créer un fichier de configuration (.conjurrc) qui contient les détails de connexion à Conjur. Ce fichier se trouvera alors  sous le répertoire racine de l'utilisateur.</p>
+<pre><code class="language-shell">conjur init --url=https://conjur.myorg.com --account=default -s
+
+#The Conjur server's certificate SHA-1 fingerprint is:
+#XX:XX:XX
+
+#To verify this certificate, we recommend running the following command on the Conjur server:
+#openssl x509 -fingerprint -noout -in ~conjur/etc/ssl/conjur.pem
+
+#Trust this certificate? yes/no (Default: no): yes
+#File /home/youruser/conjur-server.pem exists. Overwrite? yes/no (Default: yes): yes
+#Certificate written to /home/feven/conjur-server.pem
+
+#File /home/youruser/.conjurrc exists. Overwrite? yes/no (Default: yes): yes
+#Configuration written to /home/youruser/.conjurrc
+
+#Successfully initialized the Conjur CLI
+#To start using the Conjur CLI, log in to the Conjur server by running `conjur login`
+</code></pre>
+<p>Vous pouvez maintenant vous connectez au serveur conjur. Le mot de passe est l'API key for admin généré lors des étapes précédentes.</p>
+<pre><code class="language-shell">conjur login
+#Enter your username: admin
+#Enter your password or API key (this will not be echoed):
+#WARNING:root:No supported keystore found! Saving credentials in plaintext in '/home/feven/.netrc'. #Make sure to logoff after you have finished using the CLI
+#Successfully logged in to Conjur
+</code></pre>
+<h2 id="gestion-des-token-pour-openshift">Gestion des token pour Openshift</h2>
+<p>Pour automatiser la gestion des token conjur plusieurs méthodes sont possibles. Dans ce guide nous allons ajouter à notre pod un container qui s'authentifiera au serveur conjur à l'aide du certificat généré avec la commande <code>conjur init</code>. Ce token sera ensuite placé dans un dossier partager avec le container applicatif.</p>
+<p>Pour cela nous allons tout d'abord créer une configmap contenant le certificat.</p>
+<pre><code class="language-shell">oc create cm conjur-cert --from-file=ssl-certificate=/home/feven/conjur-server.pem
+</code></pre>
+<p>Nous allons maintenant créer une policy dans cyberark. Permettant au container <strong>TODO Partie à developper</strong>. Explique ce que fait la policy.</p>
+<pre><code class="language-shell">vi policy-autom.yaml
+</code></pre>
+<pre><code class="language-shell">- !policy
+  id: conjur/authn-k8s/florian-ns
+  body:
+  - !webservice
+  - !layer
+    id: ubi8-app
+  - !host
+    id: florian-ns/service_account/florian-sa
+    annotations:
+      authn-k8s/namespace: florian-ns
+      authn-k8s/authentication-container-name: ubi-auth
+  - !grant
+    role: !layer ubi8-app
+    member: !host florian-ns/service_account/florian-sa
+  - !permit
+    resource: !webservice
+    privilege: [ authenticate ]
+    role: !layer ubi8-app
+# CA cert and key for creating client certificates
+  - !policy
+    id: ca
+    body:
+    - !variable
+      id: cert
+      annotations:
+        description: CA cert for Kubernetes Pods.
+    - !variable
+      id: key
+      annotations:
+        description: CA key for Kubernetes Pods.
+  - !variable test
+  - !permit
+    role: !layer ubi8-app
+    privileges: [ read, execute ]
+    resource: !variable test
+</code></pre>
+<pre><code class="language-shell">conjur policy load -b root -f policy.yaml
+</code></pre>
+<p>On peut maintenant ajouter une variable de test :</p>
+<pre><code class="language-shell"> conjur variable set -i conjur/authn-k8s/florian-ns/test -v 1234567890
+</code></pre>
+<p>Ajouter maintenant les variable de clef/certificat.</p>
+<pre><code class="language-shell">conjur variable set -i conjur/authn-k8s/conjur/ca/cert -v &quot;$(cat /home/feven/cyberark/ca.key)&quot; 
+conjur variable set -i conjur/authn-k8s/conjur/ca/cert -v &quot;$(cat /home/feven/conjur-server.pem)&quot; 
+</code></pre>
+<p>Nous pouvons maintenant déployer notre pod constitué d'un pod applicatif et du conjur authenticator.</p>
+<pre><code class="language-shell">vi ubi8.yaml
+</code></pre>
+<pre><code class="language-shell">---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubi8
+  namespace: florian-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubi8
+  template:
+    metadata:
+      labels:
+        app: ubi8
+    spec:
+      containers:
+      - name: ubi8
+        image: openshift.artifactory.mycloud.intranatixis.com/ubi8
+        command: [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;tail -f /dev/null&quot;]
+        env:
+        - name: CONJUR_APPLIANCE_URL
+          value: &quot;https://conjur-conjur-oss.florian-ns.svc.cluster.local/authn-k8s/florian-ns&quot;
+        - name: CONJUR_ACCOUNT
+          value: default
+        - name: CONJUR_AUTHN_TOKEN_FILE
+          value: /run/conjur/access-token
+        - name: CONJUR_SSL_CERTIFICATE
+          valueFrom:
+            configMapKeyRef:
+              name: conjur-cert
+              key: ssl-certificate
+        volumeMounts:
+        - mountPath: /run/conjur
+          name: conjur-access-token
+          readOnly: true
+      - name: ubi-auth
+        image: openshift.artifactory.mycloud.intranatixis.com/cyberark/conjur-openshift-authenticator
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+           fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+           fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+             fieldPath: status.podIP
+        - name: CONJUR_AUTHN_URL
+          value: &quot;https://conjur-conjur-oss.florian-ns.svc.cluster.local/authn-k8s/florian-ns&quot;
+        - name: CONJUR_ACCOUNT
+          value: default
+        - name: CONJUR_AUTHN_LOGIN
+          value: &quot;host/conjur/authn-k8s/florian-ns/florian-ns/service_account/florian-sa&quot;
+        - name: CONJUR_SSL_CERTIFICATE
+          valueFrom:
+            configMapKeyRef:
+              name: conjur-cert
+              key: ssl-certificate
+        volumeMounts:
+        - mountPath: /run/conjur
+          name: conjur-access-token
+      serviceAccountName: florian-sa
+      volumes:
+      - name: conjur-access-token
+        emptyDir:
+          medium: Memory
+</code></pre>
+<h2 id="validation">Validation</h2>
+<p>Nous pouvons maintenant tester notre serveur conjur.</p>
+<p>Pour cela connectez vous au pod ubi8</p>
+<pre><code class="language-shell">oc rsh ubi8-7967957478-tc96s
+
+CONT_SESSION_TOKEN=$(cat /run/conjur/access-token| base64 | tr -d '\r\n')
+curl -s -k -H &quot;Content-Type: application/json&quot; -H &quot;Authorization: Token token=\&quot;$CONT_SESSION_TOKEN\&quot;&quot; https://conjur-conjur-oss-ingress.florian-ns.svc.cluster.local/secrets/default/variable/conjur%2Fauthn-k8s%2Fflorian-ns%2Ftest
+1234567890
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      
+    
+  </body>
+</html>

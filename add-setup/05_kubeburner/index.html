@@ -1,0 +1,1429 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../04_cyberark/">
+      
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.6">
+    
+    
+      
+        <title>Using kube-burner on OpenShift - My Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.50c56a3b.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#prerequisites" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="My Docs" class="md-header__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Using kube-burner on OpenShift
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/feven-redhat/minilab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    feven-redhat/minilab
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../openshift/" class="md-tabs__link">
+          
+  
+    
+  
+  Minilab guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+    
+  
+  Additional Setup
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="My Docs" class="md-nav__button md-logo" aria-label="My Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    My Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/feven-redhat/minilab" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    feven-redhat/minilab
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../openshift/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Minilab guides
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Minilab guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/01_rhel-installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de Red Hat Enterprise Linux sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/02_microshift-installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de MicroShift (mode RPM)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/03_microshift-connection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Connexion sur MicroShift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/04_add-console/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Connexion a la console
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../openshift/05_configure-storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configure dynamic storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Additional Setup
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Additional Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_openvpn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation et configuration d'un VPN sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_keycloak/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de keycloack sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_install_wordpress/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de wordpress sur Scaleway
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_cyberark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation de conjur cyberark sur openshift
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Using kube-burner on OpenShift
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Using kube-burner on OpenShift
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-install-kubeburner" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Install kubeburner
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Install kubeburner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-makefile-for-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Makefile (for Linux)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#or-downloading-a-precompiled-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Or downloading a precompiled release
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-new-directory-for-your-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a new directory for your project
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-install-elastic-kibana-and-grafafa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Install Elastic, Kibana and Grafafa
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-using-kube-burner-to-deploy-the-benchmark-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Using kube-burner to Deploy the Benchmark Application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-configure-metrics-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 5: Configure metrics file
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-install-kubeburner" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 1: Install kubeburner
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Install kubeburner">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-makefile-for-linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using Makefile (for Linux)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#or-downloading-a-precompiled-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      Or downloading a precompiled release
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-a-new-directory-for-your-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a new directory for your project
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-install-elastic-kibana-and-grafafa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 3: Install Elastic, Kibana and Grafafa
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-using-kube-burner-to-deploy-the-benchmark-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 4: Using kube-burner to Deploy the Benchmark Application
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-configure-metrics-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step 5: Configure metrics file
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="using-kube-burner-on-openshift">Using kube-burner on OpenShift</h1>
+<h1 id="introduction">Introduction</h1>
+<p>kube-burner is an open-source command-line tool designed for the creation and destruction of Kubernetes clusters and resources at scale. It simplifies the management and deployment of complex Kubernetes environments, making it an essential tool for DevOps engineers, SysAdmins, and those involved in continuous integration and delivery pipelines. In this tutorial, we'll learn how to use kube-burner to deploy a simple benchmark application on Red Hat OpenShift.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before you begin, make sure you have the following:</p>
+<ol>
+<li>A running instance of an OpenShift cluster.</li>
+<li>Kubernetes CLI (kubectl) installed and configured to communicate with your OpenShift cluster.</li>
+<li>Go programming language environment installed on your machine.</li>
+<li>Access to the GitHub repository for kube-burner: https://github.com/kube-burner/kube-burner.</li>
+</ol>
+<h2 id="step-1-install-kubeburner">Step 1: Install kubeburner</h2>
+<p>To begin, we need to download and install the kube-burner CLI. First, let's clone the repository from GitHub:</p>
+<pre><code class="language-shell">git clone https://github.com/kube-burner/kube-burner.git
+cd kube-burner
+</code></pre>
+<p>Now, build and install the binary for your operating system using the provided Makefile or by downloading a precompiled release:</p>
+<h3 id="using-makefile-for-linux">Using Makefile (for Linux)</h3>
+<pre><code class="language-shell">make
+sudo make install
+</code></pre>
+<h3 id="or-downloading-a-precompiled-release">Or downloading a precompiled release</h3>
+<pre><code class="language-shell">wget https://github.com/kube-burner/kube-burner/releases/download/v&lt;version&gt;/kube-burner-linux-amd64
+chmod +x kube-burner-linux-amd64
+sudo mv kube-burner-linux-amd64 /usr/local/bin/kube-burner
+</code></pre>
+<p>Replace <version> with the version number you'd like to download.</p>
+<p>Step 2: Writing Templates for the Benchmark Application</p>
+<p>Now, we will create YAML templates for our benchmark application which includes a web server, a curl pod used to test it, and two network policies: deny-by-default and allow-{{.Replica}}-{{.Iteration}}.</p>
+<p>First, let's create the web server and its corresponding service using the given YAML templates below:</p>
+<h2 id="create-a-new-directory-for-your-project">Create a new directory for your project</h2>
+<pre><code class="language-shell">mkdir benchmark &amp;&amp; cd benchmark
+</code></pre>
+<pre><code class="language-shell">cat &gt; ubi9-template.yaml &lt;&lt;EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubi9-{{.Replica}}-{{.Iteration}}
+  labels:
+    app: ubi9
+    replica: {{.Replica}}
+    iteration: {{.Iteration}}
+spec:
+  template:
+    path: templates/ubi9
+    values:
+      replica: {{.Replica}}
+      iteration: {{.Iteration}}
+  restartPolicy: Always
+EOF
+</code></pre>
+<pre><code class="language-shell">cat &gt; ubi9-service.yaml &lt;&lt;EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubi9-{{.Replica}}-{{.Iteration}}
+spec:
+  selector:
+    matchLabels:
+      app: ubi9
+      replica: {{.Replica}}
+      iteration: {{.Iteration}}
+  ports:
+    - protocol: TCP
+      name: 8000
+      port: 8000
+EOF
+</code></pre>
+<p>Next, create templates for the curl pod and network policies using the given YAML templates below:</p>
+<pre><code class="language-shell">cat &gt; curl-template.yaml &lt;&lt;EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: curl-{{.Replica}}-{{.Iteration}}
+  labels:
+    app: curl
+    replica: {{.Replica}}
+    iteration: {{.Iteration}}
+spec:
+  template:
+    path: templates/curl
+    values:
+      replica: {{.Replica}}
+      iteration: {{.Iteration}}
+  restartPolicy: Always
+EOF
+</code></pre>
+<pre><code>cat &gt; deny-by-default-template.yaml &lt;&lt;EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-by-default
+spec:
+  podSelector: {}
+    ingress: []
+EOF
+</code></pre>
+<pre><code class="language-shell">cat &gt; allow-{{.Replica}}-{{.Iteration}}-template.yaml &lt;&lt;EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-{{.Replica}}-{{.Iteration}}
+spec:
+  podSelector:
+    matchLabels:
+      app: ubi9
+      replica: {{.Replica}}
+      iteration: {{.Iteration}}
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 8000
+EOF
+</code></pre>
+<h2 id="step-3-install-elastic-kibana-and-grafafa">Step 3: Install Elastic, Kibana and Grafafa</h2>
+<p>To be able to monitor our benchmark we gonna install some operator. Go in the Openshift Console and Install Elasticsearch (ECK) Operator and Grafana Operator.</p>
+<p>Then write the below configuration for the Operator</p>
+<pre><code class="language-shell">cat &gt; elastic.yaml &lt;&lt;EOF
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch-kube-burner
+  namespace: kube-burner
+spec:
+  auth: {}
+  http:
+    service:
+      metadata: {}
+      spec: {}
+    tls:
+      certificate: {}
+  image: registry.access.redhat.com/elastic/elasticsearch
+  monitoring:
+    logs: {}
+    metrics: {}
+  nodeSets:
+    - config:
+        node.attr.attr_name: attr_value
+        node.roles:
+          - master
+          - data
+        node.store.allow_mmap: false
+      count: 3
+      name: default
+      podTemplate:
+        metadata:
+          creationTimestamp: null
+          labels:
+            foo: bar
+        spec:
+          containers:
+            - name: elasticsearch
+              resources:
+                limits:
+                  cpu: '2'
+                  memory: 4Gi
+                requests:
+                  cpu: '1'
+                  memory: 4Gi
+  transport:
+    service:
+      metadata: {}
+      spec: {}
+    tls:
+      certificate: {}
+      certificateAuthorities: {}
+  updateStrategy:
+    changeBudget: {}
+  version: 8.11.0
+EOF
+</code></pre>
+<pre><code class="language-shell">cat &gt; kibana.yaml &lt;&lt;EOF
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana-kube-burner
+  namespace: kube-burner
+spec:
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch-sample
+  enterpriseSearchRef: {}
+  http:
+    service:
+      metadata: {}
+      spec: {}
+    tls:
+      certificate: {}
+  image: registry.access.redhat.com/elastic/kibana
+  monitoring:
+    logs: {}
+    metrics: {}
+  podTemplate:
+    metadata:
+      creationTimestamp: null
+      labels:
+        foo: bar
+    spec:
+      containers:
+        - name: kibana
+          resources:
+            limits:
+              cpu: '2'
+              memory: 2Gi
+            requests:
+              cpu: 500m
+              memory: 1Gi
+  version: 8.11.0
+EOF
+</code></pre>
+<pre><code class="language-shell">cat &gt; grafana.yaml &lt;&lt;EOF
+apiVersion: integreatly.org/v1alpha1
+kind: Grafana
+metadata:
+  name: grafana-v8
+  namespace: kube-burner
+spec:
+  baseImage: registry.access.redhat.com/rhel9/grafana
+  config:
+    auth.anonymous:
+      enabled: true
+    log:
+      level: warn
+      mode: console
+    security:
+      admin_password: hello
+      admin_user: admin
+  ingress:
+    enabled: true
+EOF
+</code></pre>
+<pre><code class="language-shell">oc apply -f elastic.yaml -f kibana.yaml -f grafana.yaml
+</code></pre>
+<p>Then save the elasticsearch password and route with the below command.</p>
+<pre><code class="language-shell">oc get secret elasticsearch-kube-burner-es-elastic-user -n kube-burner \
+   -o go-template --template=&quot;{{.data.elastic|base64decode}}&quot;
+</code></pre>
+<pre><code class="language-shell">oc get route -n kube-burner
+</code></pre>
+<p>Finally we will create an ElasticSearchDataSource that will be used to plot the content of the genereted metrics from the index.</p>
+<pre><code class="language-shell">cat &gt; elasticGrafanaDataSource.yaml &lt;&lt;EOF
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDataSource
+metadata:
+  name: elastic-kube-burner
+spec:
+  datasources:
+  - access: proxy
+    basicAuth: true
+    basicAuthPassword: YOUR_PASSWORD
+    basicAuthUser: elastic
+    database: kube-burner
+    editable: true
+    isDefault: false
+    jsonData:
+      tlsSkipVerify: true
+      esVersion: 70
+      timeField: timestamp
+      timeInterval: 5s
+    name: Elastic-kube-burner
+    type: elasticsearch
+    url: https://YOUR_ROUTE
+    version: 1
+  name: elastic-kube-burner.yaml
+EOF
+</code></pre>
+<pre><code class="language-shell">oc apply -f elasticGrafanaDataSource.yaml
+</code></pre>
+<h2 id="step-4-using-kube-burner-to-deploy-the-benchmark-application">Step 4: Using kube-burner to Deploy the Benchmark Application</h2>
+<p>Now that we have our YAML templates, let's use kube-burner to create and apply them on OpenShift. Create a Kube-Burner configuration file to deploy the benchmark application using Kube-Burner. Let's start by defining the basic structure of our configuration file.</p>
+<p>NOTE: Update the password and the route of elasticsearch with the one that you get in the previous step.</p>
+<pre><code class="language-shell">---
+global:
+  indexerConfig:
+    esServers: [https://elastic:YOURPASSWORD@YOUR_ES_ROUTE]
+    insecureSkipVerify: true
+    defaultIndex: kube-burner
+    type: elastic
+  measurements:
+    - name: podLatency
+jobs:
+  - name: deny-all-policy
+    jobIterations: 1
+    qps: 1
+    burst: 1
+    namespacedIterations: false
+    namespace: kubelet-density-cni-networkpolicy
+    jobPause: 1m
+    objects:
+
+      - objectTemplate: templates/deny-all.yml
+        replicas: 1
+
+  - name: kubelet-density-cni-networkpolicy
+    jobIterations: 2
+    qps: 25
+    burst: 25
+    namespacedIterations: false
+    namespace: kubelet-density-cni-networkpolicy
+    waitWhenFinished: true
+    podWait: false
+    preLoadImages: true
+    preLoadPeriod: 2m
+    objects:
+
+      - objectTemplate: templates/ubi9-deployment.yaml
+        replicas: 1
+
+      - objectTemplate: templates/ubi9-service.yaml
+        replicas: 1
+
+      - objectTemplate: templates/allow-http.yml
+        replicas: 1
+
+      - objectTemplate: templates/curl-deployment.yaml
+        replicas: 1
+</code></pre>
+<p>Here's an explanation of the different parts:</p>
+<p>Global:
+This section sets some general configuration parameters for the kube-burner tool. Here, we configure the ElasticSearch server endpoint, disable SSL certificate verification, set the default index name, and specify that we will use ElasticSearch as our type of metrics provider.</p>
+<p>jobs:
+The jobs section contains a list of job definitions that represent the different workloads and tests we want to run. Each job has several attributes:</p>
+<ul>
+<li>name: A descriptive name for the job</li>
+<li>jobIterations: The number of times each test is repeated (useful when testing for stability)</li>
+<li>qps: The number of queries per second during a test's active phase</li>
+<li>burst: The maximum number of queries per second that can be sent during a test's bursting phase</li>
+<li>namespacedIterations: If true, each test will run in a separate Kubernetes namespace for better isolation</li>
+<li>namespace: The namespace where the test workloads and resources will be deployed</li>
+<li>jobPause: The number of seconds between job iterations (useful when testing long-running services)</li>
+</ul>
+<p>objects:
+The objects section lists the resource templates that kube-burner will create for each job. For example, one job might deploy a deployment, another might deploy a service, and yet another might create a network policy. The number of replicas for each template is specified in the "replicas" field.</p>
+<p>In summary, this configuration file sets up several jobs with varying workloads (e.g., a 'deny-all-policy' job, which deploys a network policy denying all traffic) and resources (such as deployments and services), and specifies the settings for each test (like the number of iterations, QPS, and bursts). The kube-burner tool will then use this configuration file to create, deploy, and manage these resources in a Kubernetes cluster.</p>
+<h2 id="step-5-configure-metrics-file">Step 5: Configure metrics file</h2>
+<p>Now we will configure a metrics file that will be used to collect metrics from prometheus to collect informations about the state of the cluster during our benchmark/test.</p>
+<p>```shell metrics.yaml
+cat &gt; elasticGrafanaDataSource.yaml &lt;&lt;EOF</p>
+<h1 id="api-server">API server</h1>
+<h1 id="api-server_1">API server</h1>
+<ul>
+<li>
+<p>query: histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket{apiserver="kube-apiserver", verb!~"WATCH", subresource!="log"}[2m])) by (verb,resource,subresource,instance,le)) &gt; 0
+  metricName: API99thLatency</p>
+</li>
+<li>
+<p>query: sum(irate(apiserver_request_total{apiserver="kube-apiserver",verb!="WATCH",subresource!="log"}[2m])) by (verb,instance,resource,code) &gt; 0
+  metricName: APIRequestRate</p>
+</li>
+<li>
+<p>query: sum(apiserver_current_inflight_requests{}) by (request_kind) &gt; 0
+  metricName: APIInflightRequests</p>
+</li>
+</ul>
+<h1 id="containers-pod-metrics">Containers &amp; pod metrics</h1>
+<ul>
+<li>
+<p>query: sum(irate(container_cpu_usage_seconds_total{name!="",namespace=~"openshift-(etcd|oauth-apiserver|.<em>apiserver|ovn-kubernetes|sdn|ingress|authentication|.</em>controller-manager|.*scheduler|monitoring|logging|image-registry)"}[2m]) * 100) by (pod, namespace, node)
+  metricName: podCPU</p>
+</li>
+<li>
+<p>query: sum(container_memory_rss{name!="",namespace=~"openshift-(etcd|oauth-apiserver|.<em>apiserver|ovn-kubernetes|sdn|ingress|authentication|.</em>controller-manager|.*scheduler|monitoring|logging|image-registry)"}) by (pod, namespace, node)
+  metricName: podMemory</p>
+</li>
+<li>
+<p>query: (sum(rate(container_fs_writes_bytes_total{container!="",device!~".+dm.+"}[5m])) by (device, container, node) and on (node) kube_node_role{role="master"}) &gt; 0
+  metricName: containerDiskUsage</p>
+</li>
+</ul>
+<h1 id="kubelet-cri-o-metrics">Kubelet &amp; CRI-O metrics</h1>
+<ul>
+<li>
+<p>query: sum(irate(process_cpu_seconds_total{service="kubelet",job="kubelet"}[2m]) * 100) by (node) and on (node) kube_node_role{role="worker"}
+  metricName: kubeletCPU</p>
+</li>
+<li>
+<p>query: sum(process_resident_memory_bytes{service="kubelet",job="kubelet"}) by (node) and on (node) kube_node_role{role="worker"}
+  metricName: kubeletMemory</p>
+</li>
+<li>
+<p>query: sum(irate(process_cpu_seconds_total{service="kubelet",job="crio"}[2m]) * 100) by (node) and on (node) kube_node_role{role="worker"}
+  metricName: crioCPU</p>
+</li>
+<li>
+<p>query: sum(process_resident_memory_bytes{service="kubelet",job="crio"}) by (node) and on (node) kube_node_role{role="worker"}
+  metricName: crioMemory</p>
+</li>
+</ul>
+<h1 id="node-metrics">Node metrics</h1>
+<ul>
+<li>
+<p>query: sum(irate(node_cpu_seconds_total[2m])) by (mode,instance) &gt; 0
+  metricName: nodeCPU</p>
+</li>
+<li>
+<p>query: avg(node_memory_MemAvailable_bytes) by (instance)
+  metricName: nodeMemoryAvailable</p>
+</li>
+<li>
+<p>query: avg(node_memory_Active_bytes) by (instance)
+  metricName: nodeMemoryActive</p>
+</li>
+<li>
+<p>query: avg(node_memory_Cached_bytes) by (instance) + avg(node_memory_Buffers_bytes) by (instance)
+  metricName: nodeMemoryCached+nodeMemoryBuffers</p>
+</li>
+<li>
+<p>query: irate(node_network_receive_bytes_total{device=~"^(ens|eth|bond|team).*"}[2m])
+  metricName: rxNetworkBytes</p>
+</li>
+<li>
+<p>query: irate(node_network_transmit_bytes_total{device=~"^(ens|eth|bond|team).*"}[2m])
+  metricName: txNetworkBytes</p>
+</li>
+<li>
+<p>query: rate(node_disk_written_bytes_total{device!~"^(dm|rb).*"}[2m])
+  metricName: nodeDiskWrittenBytes</p>
+</li>
+<li>
+<p>query: rate(node_disk_read_bytes_total{device!~"^(dm|rb).*"}[2m])
+  metricName: nodeDiskReadBytes</p>
+</li>
+<li>
+<p>query: sum(rate(etcd_server_leader_changes_seen_total[2m]))
+  metricName: etcdLeaderChangesRate</p>
+</li>
+</ul>
+<h1 id="etcd-metrics">Etcd metrics</h1>
+<ul>
+<li>
+<p>query: etcd_server_is_leader &gt; 0
+  metricName: etcdServerIsLeader</p>
+</li>
+<li>
+<p>query: histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket[2m]))
+  metricName: 99thEtcdDiskBackendCommitDurationSeconds</p>
+</li>
+<li>
+<p>query: histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket[2m]))
+  metricName: 99thEtcdDiskWalFsyncDurationSeconds</p>
+</li>
+<li>
+<p>query: histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket[5m]))
+  metricName: 99thEtcdRoundTripTimeSeconds</p>
+</li>
+<li>
+<p>query: etcd_mvcc_db_total_size_in_bytes
+  metricName: etcdDBPhysicalSizeBytes</p>
+</li>
+<li>
+<p>query: etcd_mvcc_db_total_size_in_use_in_bytes
+  metricName: etcdDBLogicalSizeBytes</p>
+</li>
+<li>
+<p>query: sum(rate(etcd_object_counts{}[5m])) by (resource) &gt; 0
+  metricName: etcdObjectCount</p>
+</li>
+<li>
+<p>query: sum by (cluster_version)(etcd_cluster_version)
+  metricName: etcdVersion
+  instant: true</p>
+</li>
+</ul>
+<h1 id="cluster-metrics">Cluster metrics</h1>
+<ul>
+<li>
+<p>query: sum(kube_namespace_status_phase) by (phase) &gt; 0
+  metricName: namespaceCount</p>
+</li>
+<li>
+<p>query: sum(kube_pod_status_phase{}) by (phase)
+  metricName: podStatusCount</p>
+</li>
+<li>
+<p>query: count(kube_secret_info{})
+  metricName: secretCount</p>
+</li>
+<li>
+<p>query: count(kube_deployment_labels{})
+  metricName: deploymentCount</p>
+</li>
+<li>
+<p>query: count(kube_configmap_info{})
+  metricName: configmapCount</p>
+</li>
+<li>
+<p>query: count(kube_service_info{})
+  metricName: serviceCount</p>
+</li>
+<li>
+<p>query: count(openshift_route_created{})
+  metricName: routeCount
+  instant: true</p>
+</li>
+<li>
+<p>query: kube_node_role
+  metricName: nodeRoles
+  instant: true</p>
+</li>
+<li>
+<p>query: sum(kube_node_status_condition{status="true"}) by (condition)
+  metricName: nodeStatus</p>
+</li>
+<li>
+<p>query: cluster_version{type="completed"}
+  metricName: clusterVersion
+  instant: true
+EOF</p>
+</li>
+</ul>
+<pre><code>
+Now launch your benchmark with the below command :
+
+```shell
+kube-burner init -m ./metrics.yaml -c ./network-policy-density.yaml -u https://$(oc get route prometheus-k8s -n openshift-monitoring -o jsonpath=&quot;{.spec.host}&quot;) --log-level=debug --token=$(oc create token prometheus-k8s -n openshift-monitoring)
+</code></pre>
+<h1 id="validation">Validation.</h1>
+<p>TODO present the namespace kubelet-density-cni-networkpolicy.</p>
+<p>To plot the metrics go in grafana and login with user <code>admin</code> and password <code>hello</code></p>
+<pre><code class="language-shell">oc get route grafana-route -n kube-burner
+</code></pre>
+<p>Go in dashboard and click on import and upload the below json file :</p>
+<pre><code class="language-shell">https://github.com/kube-burner/kube-burner/blob/main/examples/grafana-dashboards/kube-burner-latest.json
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e1c3ead8.min.js"></script>
+      
+    
+  </body>
+</html>
